@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 import sqlite3
 import init_db
 
+init_db.init()
+
 # ===================== 建立 Flask 應用 =====================
 app = Flask(__name__)
 app.secret_key = "hong0826"
@@ -42,48 +44,71 @@ def register():
 # ===================== 登入 API =====================
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    username = data['username']
-    password = data['password']
+    try:
+        data = request.json
+        username = data['username']
+        password = data['password']
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # 查詢 10 分鐘內登入失敗次數
-    ten_minutes_ago = datetime.now() - timedelta(minutes=10)
-    cursor.execute(
-        "SELECT COUNT(*) AS fail_count FROM login_attempts WHERE username = ? AND attempt_time > ?",
-        (username, ten_minutes_ago)
-    )
-    fail_count = cursor.fetchone()['fail_count']
+        # Debug log
+        print(f"[LOGIN] username: {username}, password: {password}")
 
-    if fail_count >= 5:
+        # 檢查 login_attempts 是否存在
+        try:
+            ten_minutes_ago = datetime.now() - timedelta(minutes=10)
+            cursor.execute("""
+                SELECT COUNT(*) AS fail_count FROM login_attempts 
+                WHERE username = ? AND attempt_time > ?
+            """, (username, ten_minutes_ago))
+            result = cursor.fetchone()
+            fail_count = result['fail_count'] if result else 0
+        except Exception as e:
+            print("[LOGIN] ⚠️ 無法查詢 login_attempts：", e)
+            fail_count = 0  # 若 login_attempts 不存在則跳過檢查
+
+        if fail_count >= 5:
+            conn.close()
+            return jsonify({'msg': '登入失敗次數過多', 'show_forget': True}), 400
+
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+
+        if not user:
+            conn.close()
+            return jsonify({'msg': '帳號尚未註冊'}), 400
+
+        if user['password'] != password:
+            try:
+                cursor.execute("""
+                    INSERT INTO login_attempts (username, attempt_time) 
+                    VALUES (?, ?)
+                """, (username, datetime.now()))
+                conn.commit()
+            except Exception as e:
+                print("[LOGIN] ⚠️ 寫入 login_attempts 失敗：", e)
+
+            conn.close()
+            return jsonify({'msg': '密碼錯誤'}), 400
+
+        # 登入成功，刪除 login_attempts
+        try:
+            cursor.execute("DELETE FROM login_attempts WHERE username = ?", (username,))
+            conn.commit()
+        except Exception as e:
+            print("[LOGIN] ⚠️ 清除 login_attempts 失敗：", e)
+
         conn.close()
-        return jsonify({'msg': '登入失敗次數過多', 'show_forget': True}), 400
+        session['user'] = username
 
-    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-    user = cursor.fetchone()
+        print(f"[LOGIN] ✅ 登入成功：{username}")
+        return jsonify({"msg": "登入成功", "name": user['name']})
 
-    if not user:
-        conn.close()
-        return jsonify({'msg': '帳號尚未註冊'}), 400
+    except Exception as e:
+        print("[LOGIN] ❌ 發生未預期錯誤：", e)
+        return jsonify({"msg": "伺服器內部錯誤"}), 500
 
-    if user['password'] != password:
-        cursor.execute(
-            "INSERT INTO login_attempts (username, attempt_time) VALUES (?, ?)", 
-            (username, datetime.now())
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({'msg': '密碼錯誤'}), 400
-
-    # 登入成功 → 清除錯誤紀錄
-    cursor.execute("DELETE FROM login_attempts WHERE username = ?", (username,))
-    conn.commit()
-    conn.close()
-
-    session['user'] = username
-    return jsonify({"msg": "登入成功", "name": user['name']})
 
 # ===================== 忘記密碼 API =====================
 @app.route('/forget', methods=['POST'])
