@@ -50,18 +50,24 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
             })
-                .then(res => res.json())                                        // 將回應轉換為 JSON
-                .then(data => {
-                    if (data.msg === "登入成功") {
-                        localStorage.setItem("username", username);            // 儲存帳號於 localStorage
-                        localStorage.setItem("name", data.name);              // 儲存姓名於 localStorage
-                        window.location.href = "index.html";                  // 跳轉至主頁
-                    } else if (data.show_forget) {
-                        document.getElementById("forgot-btn").style.display = "block"; // 顯示忘記密碼按鈕
-                        alert(data.msg);                                       // 顯示訊息
-                    } else {
-                        alert(data.msg);                                       // 其他錯誤訊息
+                .then(async res => {
+                    // ✅ 先檢查狀態碼 & 確保 response 內容不是空的
+                    const text = await res.text();
+                    try {
+                        const json = JSON.parse(text);
+                        if (!res.ok) throw new Error(json.msg || "登入失敗");
+                        return json;
+                    } catch (e) {
+                        throw new Error("無效的 JSON 回應，可能是後端掛掉或沒回傳資料");
                     }
+                })
+                .then(data => {
+                    localStorage.setItem("username", username);
+                    localStorage.setItem("name", data.name);
+                    window.location.href = "index.html";
+                })
+                .catch(err => {
+                    alert("⚠️ 登入失敗：" + err.message);
                 });
         }
 

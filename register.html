@@ -63,14 +63,26 @@
             fetch("https://str-web.onrender.com/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, username, password })               // 將資料轉成 JSON
+                body: JSON.stringify({ name, username, password })
             })
-                .then(res => res.json())                                         // 回傳 JSON 結果
+                .then(async res => {
+                    const text = await res.text();
+                    try {
+                        const json = JSON.parse(text);
+                        if (!res.ok) throw new Error(json.msg || "註冊失敗");
+                        return json;
+                    } catch (e) {
+                        throw new Error("無效的 JSON 回應，可能是後端沒回資料");
+                    }
+                })
                 .then(data => {
-                    alert(data.msg);                                             // 顯示回應訊息
-                    if (data.msg === "註冊成功") {                               // 若註冊成功則跳轉回登入頁
+                    alert(data.msg);
+                    if (data.msg === "註冊成功") {
                         window.location.href = "login.html";
                     }
+                })
+                .catch(err => {
+                    alert("⚠️ 註冊失敗：" + err.message);
                 });
         }
 

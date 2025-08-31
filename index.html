@@ -114,18 +114,25 @@
                 method: "POST",
                 body: formData
             })
-                .then(response => {
-                    if (!response.ok) throw new Error("伺服器錯誤");
-                    return response.blob(); // 拿到圖片的二進位資料
+                .then(async response => {
+                    const contentType = response.headers.get("Content-Type");
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || "伺服器錯誤");
+                    }
+                    if (!contentType.startsWith("image/")) {
+                        const text = await response.text();
+                        throw new Error("模型沒有正確回傳圖片：" + text);
+                    }
+                    return response.blob();
                 })
                 .then(resultBlob => {
                     const url = URL.createObjectURL(resultBlob);
                     const outputBox = document.getElementById("output-preview");
-                    outputBox.innerHTML = `<img src="${url}" style="width:100%; height:100%;">`; // 顯示結果圖
+                    outputBox.innerHTML = `<img src="${url}" style="width:100%; height:100%;">`;
                 })
                 .catch(err => {
-                    console.error("推論錯誤：", err);
-                    alert("圖片轉換失敗：" + err.message);
+                    alert("❌ 圖片轉換失敗：" + err.message);
                 });
         }
 
