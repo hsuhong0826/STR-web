@@ -44,7 +44,7 @@
             }
 
             // 向後端發送 POST 請求，請求忘記密碼 API
-            fetch("http://127.0.0.1:5000/forget", { // 呼叫本地伺服器的 /forget API
+            fetch("https://str-web.onrender.com/forget", { // 呼叫本地伺服器的 /forget API
                 method: "POST", // 使用 POST 方法送出資料
                 headers: { "Content-Type": "application/json" }, // 設定資料格式為 JSON
                 body: JSON.stringify({ username, name }) // 將帳號與姓名轉成 JSON 字串傳送

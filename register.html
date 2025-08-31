@@ -60,7 +60,7 @@
             }
 
             // 發送註冊請求至後端
-            fetch("http://127.0.0.1:5000/register", {
+            fetch("https://str-web.onrender.com/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, username, password })               // 將資料轉成 JSON

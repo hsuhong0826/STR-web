@@ -45,7 +45,7 @@
             }
 
             // 發送登入請求
-            fetch("http://127.0.0.1:5000/login", {
+            fetch("https://str-web.onrender.com/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
@@ -68,22 +68,6 @@
         // 忘記密碼頁跳轉
         function goToForget() {
             window.location.href = "forget.html";
-        }
-
-        // 註冊功能（目前未使用）
-        function register() {
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
-
-            fetch("http://127.0.0.1:5000/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.msg);
-                });
         }
     </script>
 </body>
