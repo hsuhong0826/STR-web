@@ -51,15 +51,9 @@
                 body: JSON.stringify({ username, password })
             })
                 .then(async res => {
-                    // ✅ 先檢查狀態碼 & 確保 response 內容不是空的
-                    const text = await res.text();
-                    try {
-                        const json = JSON.parse(text);
-                        if (!res.ok) throw new Error(json.msg || "登入失敗");
-                        return json;
-                    } catch (e) {
-                        throw new Error("無效的 JSON 回應，可能是後端掛掉或沒回傳資料");
-                    }
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.msg || "登入失敗");
+                    return data;
                 })
                 .then(data => {
                     localStorage.setItem("username", username);
