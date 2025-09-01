@@ -64,7 +64,7 @@
             if (name) {
                 document.getElementById("welcome-text").innerText = `${name} 您好！`;
             } else {
-                window.location.href = "login.html"; // 無登入則跳轉回登入頁
+                window.location.href = "/"; // 無登入則跳轉回登入頁
             }
         });
 
@@ -72,7 +72,7 @@
         function logout() {
             localStorage.removeItem("name");
             localStorage.removeItem("username");
-            window.location.href = "login.html"; // 返回登入頁
+            window.location.href = "/"; // 返回登入頁
         }
 
         // ✅ 模擬點擊 input 標籤來選擇檔案

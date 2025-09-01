@@ -25,7 +25,7 @@
             <!-- ✅ 按鈕區塊 -->
             <div class="login-btns">
                 <button onclick="register()">註冊</button> <!-- 註冊按鈕 -->
-                <button onclick="window.location.href='login.html'">返回登入</button> <!-- 返回登入頁 -->
+                <button onclick="window.location.href='/'">返回登入</button> <!-- 返回登入頁 -->
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@
                 .then(data => {
                     alert(data.msg);
                     if (data.msg === "註冊成功") {
-                        window.location.href = "login.html";
+                        window.location.href = "/";
                     }
                 })
                 .catch(err => {
@@ -88,7 +88,7 @@
 
         // 返回登入頁面
         function goBack() {
-            window.location.href = "login.html";
+            window.location.href = "/";
         }
     </script>
 </body>

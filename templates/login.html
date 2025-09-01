@@ -18,7 +18,7 @@
 
             <div class="login-btns"> <!-- 登入 / 註冊 按鈕列 -->
                 <button onclick="login()">登入</button> <!-- 登入按鈕 -->
-                <button onclick="window.location.href='register.html'">註冊</button> <!-- 跳轉註冊頁 -->
+                <button onclick="window.location.href='/register'">註冊</button> <!-- 跳轉註冊頁 -->
             </div>
 
             <button id="forgot-btn" onclick="goToForget()" style="display: none; margin-top: 10px;">
@@ -64,7 +64,7 @@
                 .then(data => {
                     localStorage.setItem("username", username);
                     localStorage.setItem("name", data.name);
-                    window.location.href = "index.html";
+                    window.location.href = "/index";
                 })
                 .catch(err => {
                     alert("⚠️ 登入失敗：" + err.message);
@@ -73,7 +73,7 @@
 
         // 忘記密碼頁跳轉
         function goToForget() {
-            window.location.href = "forget.html";
+            window.location.href = "/forget";
         }
     </script>
 </body>

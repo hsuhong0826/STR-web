@@ -140,6 +140,19 @@ def forget():
 def home():
     return render_template('login.html')
 
+@app.route('/register')
+def register_page():
+    return render_template('register.html')
+
+@app.route('/forget')
+def forget_page():
+    return render_template('forget.html')
+
+@app.route('/index')
+def index_page():
+    return render_template('index.html')
+
+
 # ===================== 啟動 =====================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
