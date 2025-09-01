@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"> <!-- 設定編碼為 UTF-8 -->
     <title>註冊 STR 系統</title> <!-- 頁面標題 -->
-    <link rel="stylesheet" href="login.css"> <!-- 引入外部 CSS 樣式表 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 
 <body>
@@ -60,7 +60,7 @@
             }
 
             // 發送註冊請求至後端
-            fetch("https://str-web.onrender.com/register", {
+            fetch("/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, username, password })

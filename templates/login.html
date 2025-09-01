@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"> <!-- 設定編碼為 UTF-8 -->
     <title>登入 STR 系統</title> <!-- 網頁標題 -->
-    <link rel="stylesheet" href="login.css"> <!-- 引入外部 CSS 樣式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 
 <body>
@@ -45,7 +45,7 @@
             }
 
             // 發送登入請求
-            fetch("https://str-web.onrender.com/login", {
+            fetch("/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
