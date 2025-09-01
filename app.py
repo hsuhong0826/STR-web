@@ -4,6 +4,7 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 import sqlite3
 import init_db
+from flask import render_template
 
 init_db.init()
 
@@ -133,6 +134,11 @@ def forget():
     else:
         conn.close()
         return jsonify({'msg': "帳號或姓名不正確，無法找回密碼"}), 400
+    
+# ===================== 頁面首頁：轉址到 login.html =====================
+@app.route('/')
+def home():
+    return render_template('login.html')
 
 # ===================== 啟動 =====================
 if __name__ == "__main__":
