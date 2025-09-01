@@ -110,7 +110,7 @@
             const formData = new FormData();
             formData.append("image", selectedFile);
 
-            fetch("https://hong0826-str-model.hf.space/predict", {
+            fetch("https://hong0826-str-model.hf.space/+/api/predict", {
                 method: "POST",
                 body: formData
             })
