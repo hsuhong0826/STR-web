@@ -177,3 +177,77 @@ footer {
     font-weight: bold;
     /* 文字加粗 */
 }
+
+/* ========= 響應式調整 ========= */
+
+/* 手機 (<= 480px) */
+@media (max-width: 480px) {
+    .image-area {
+        flex-direction: column;
+        /* 由橫排改直排 */
+        gap: 20px;
+        /* 圖片間距縮小 */
+        align-items: center;
+        /* 圖片置中 */
+    }
+
+    .image-box {
+        width: 90%;
+        /* 撐滿手機螢幕 */
+        height: auto;
+        /* 高度自動 */
+        aspect-ratio: 1 / 1;
+        /* 保持正方形 */
+    }
+
+    .arrow {
+        font-size: 50px;
+        /* 箭頭縮小 */
+        margin: 0;
+        /* 移除多餘間距 */
+    }
+
+    .button-row {
+        flex-direction: column;
+        /* 改直排 */
+        gap: 15px;
+        /* 間距縮小 */
+    }
+
+    button {
+        width: 100%;
+        /* 滿版按鈕 */
+        padding: 15px 0;
+        /* 上下內距 */
+        font-size: 16px;
+        /* 字體縮小 */
+    }
+}
+
+/* 平板 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .image-area {
+        gap: 20px;
+    }
+
+    .image-box {
+        width: 250px;
+        height: 250px;
+    }
+
+    .arrow {
+        font-size: 70px;
+        margin-top: 50px;
+    }
+
+    .button-row {
+        gap: 15px;
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+}
+
+/* 桌面 (>= 769px) 保持原始設定 */
