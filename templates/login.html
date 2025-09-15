@@ -52,16 +52,24 @@
             })
                 .then(async res => {
                     const data = await res.json();
-                    if (!res.ok) throw new Error(data.msg || "登入失敗");
-                    return data;
-                })
-                .then(data => {
-                    localStorage.setItem("username", username);
-                    localStorage.setItem("name", data.name);
-                    window.location.href = "/index";
+
+                    if (res.ok) {
+                        // ✅ 登入成功
+                        localStorage.setItem("username", username);
+                        localStorage.setItem("name", data.name);
+                        window.location.href = "/index";
+                    } else {
+                        // ⚠️ 登入失敗
+                        alert("⚠️ 登入失敗：" + data.msg);
+
+                        // ✅ 如果後端回傳 show_forget = true，顯示忘記密碼按鈕
+                        if (data.show_forget) {
+                            document.getElementById("forgot-btn").style.display = "block";
+                        }
+                    }
                 })
                 .catch(err => {
-                    alert("⚠️ 登入失敗：" + err.message);
+                    alert("伺服器錯誤：" + err.message);
                 });
         }
 
